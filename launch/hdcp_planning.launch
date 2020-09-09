@@ -1,0 +1,23 @@
+<launch>
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="hex_radius" default="1.0"/>
+  <arg name="turning_radius" default="0.5"/>
+  <arg name="data_folder" default="hdcp"/>
+  <arg name="exploration_mode" default="false"/>
+  <arg name="debugging_mode" default="false"/>
+  <arg name="obstacle_threshold" default="100"/>
+
+  <!-- run HDCP algorithm script -->
+  <node pkg="hdcp_planning" type="hdcp.py" name="hdcp_planner" output="screen">
+    <param name="x" value="$(arg x)"/>
+    <param name="y" value="$(arg y)"/>
+    <param name="hex_radius" value="$(arg hex_radius)"/>
+    <param name="robot_turning_radius" value="$(arg turning_radius)"/>
+    <param name="data_path" value="$(find hdcp_planning)/data/$(arg data_folder)"/>
+    <param name="exploration_mode" value="$(arg exploration_mode)"/>
+    <param name="debugging_mode" value="$(arg debugging_mode)"/>
+    <param name="obstacle_threshold" value="$(arg obstacle_threshold)"/>
+  </node>
+
+</launch>

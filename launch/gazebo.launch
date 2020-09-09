@@ -1,0 +1,33 @@
+<launch>
+  <env name="GAZEBO_MODEL_PATH" value="$GAZEBO_MODEL_PATH:$(find hdcp_planning)/models" />
+  <env name="GAZEBO_RESOURCE_PATH" value="$GAZEBO_RESOURCE_PATH:$(find hdcp_planning)/models" />
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="world" default="random"/>
+
+  <arg name="urdf" default="$(find turtlebot2n_description)/robots/kobuki_hexagons_astra_rplidar.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg urdf)" />
+
+  <!-- include two nodes gazebo (server) and gazebo_gui (client) -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find hdcp_planning)/worlds/$(arg world).world"/>
+  </include>
+
+  <!-- Gazebo model spawner -->
+  <node name="spawn_turtlebot2n_model" pkg="gazebo_ros" type="spawn_model"
+        args=" -unpause -urdf -param robot_description -model mobile_base -x $(arg x) -y $(arg y)"/>
+
+  <!-- velocity muxer -->
+  <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux"
+        args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find turtlebot_bringup)/param/mux.yaml"/>
+    <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
+  </node>
+
+  <!-- publish robot state -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
+
+</launch>
