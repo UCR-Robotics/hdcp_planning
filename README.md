@@ -35,8 +35,8 @@ X. Kan, H. Teng, and K. Karydis, "**Online Exploration and Coverage Planning in 
 ## 2. Installation
 
 ### 2.1 Prerequisites 
-- Ubuntu 16.04 + ROS Kinetic
-  - It is possible to run on Ubuntu 18.04, if we build turtlebot2 from source or switch to other robots equipped with the same sensors. See the last section for more information.
+- Ubuntu 16.04 + ROS Kinetic (or Ubuntu 18.04 + ROS Melodic)
+  - It is possible to run in Ubuntu 18.04, if we [build turtlebot2 from source](https://github.com/UCR-Robotics/Turtlebot2-On-Melodic) or switch to other robots equipped with the same sensors. See the last section for more information.
 - [turtlebot2n_description](https://github.com/UCR-Robotics/turtlebot2n)
   - We use a customized turtlebot2 robot, equipped with RPLidar and Astra Pro camera, in both Gazebo simulation and experiments. This is a URDF description package that we developed to be compatible with the hardware. It depends on `turtlebot` meta-package (and `rplidar_ros` package if running hardware).
 - [obstacle_detector](https://github.com/UCR-Robotics/obstacle_detector)
@@ -48,7 +48,7 @@ We provide a step-by-step installation guideline, including all dependencies.
 
 - Please follow ROS Wiki to [install ROS](http://wiki.ros.org/kinetic/Installation/Ubuntu) and [create a ROS workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace). In the following, we assume the ROS workspace is at `~/catkin_ws`.
 
-- Install `turtlebot` dependencies. (Not all of them are required in simulation, but this is a complete list for hardware.)
+- Install `turtlebot` dependencies. Not all of them are required in simulation, but this is a complete list for hardware. (If running in Ubuntu 18, please skip this step and follow the instruction in [this repository](https://github.com/UCR-Robotics/Turtlebot2-On-Melodic) instead to install `turtlebot` dependencies.)
   ```
   sudo apt-get update
   sudo apt-get upgrade
@@ -56,13 +56,15 @@ We provide a step-by-step installation guideline, including all dependencies.
   sudo apt-get install ros-kinetic-kobuki-ftdi ros-kinetic-ar-track-alvar-msgs
   ```
 
-- Install Armadillo C++ linear algebra library for obstacle detector. You may use other folders other than `Downloads` as you like.
+- Install Armadillo C++ linear algebra library for obstacle detector. You may use other folders other than `Downloads` as you like. (We provide a backup source in case the original one is expired.)
   ```
   cd ~/Downloads
   wget http://sourceforge.net/projects/arma/files/armadillo-9.700.2.tar.xz
+  #wget https://github.com/UCR-Robotics/hdcp_planning/raw/armadillo/armadillo-9.700.2.tar.xz
   tar -xvf armadillo-9.700.2.tar.xz 
   cd armadillo-9.700.2
-  cmake .  [this dot is important]
+  mkdir build && cd build
+  cmake ..
   make
   sudo make install
   ```
@@ -170,7 +172,7 @@ We acknowledge that some designs are not optimal for now. Future work can includ
 - more efficient A* online replanning,
 - reducing dependencies on turtlebot and supporting other robots.
 
-Currently, `turtlebot` meta-package has not been released under ROS Melodic (not able to install by `sudo apt install ros-melodic-turtlebot`), due to deprecated dependencies. It is possible to build from source or switch to other robots with the same configuration.
+Currently, `turtlebot` meta-package has not been released under ROS Melodic (not able to install by `sudo apt install ros-melodic-turtlebot`), due to deprecated dependencies. It is possible to build from source or switch to other robots with the same configuration. Please follow the instruction in [this repository](https://github.com/UCR-Robotics/Turtlebot2-On-Melodic) to install `turtlebot` in Ubuntu 18. 
 
 **Our framework is compatible with any other robot (e.g., [ROSbot 2.0](https://store.husarion.com/products/rosbot)) that can provide 2D lidar point cloud and respond to `cmd_vel` (geometry_msgs/Twist) commands.** Though named after turtlebot, the `turtlebot.py` file by itself does not rely on any component in the turtlebot package. Only topic names in subscriber/publisher need to be changed.
 
